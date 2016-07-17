@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
+import getQuotes from './get_quotes_reducer';
 
 const rootReducer = combineReducers({
-  state: (state = {}) => state
+  quotes: getQuotes
 });
-
 export default rootReducer;
