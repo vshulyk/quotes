@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Board from '../containers/board';
+import QuoteList from '../containers/quote_list';
 
 export default class App extends Component {
   render() {
     return (
       <div>
-      	<Board />
+      	<QuoteList />
       </div>
     );
   }

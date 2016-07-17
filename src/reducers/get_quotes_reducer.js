@@ -6,7 +6,8 @@ export default function( state = [], action ) {
 		case NEXT_QUOTE:
 			const stateObject = {
 				ts: (new Date()).getTime(),
-				data: action.payload.data
+				data: action.payload.data,
+				status: ''
 			};
 			return [stateObject, ...state];
 	};

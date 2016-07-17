@@ -3,8 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { nextQuote } from '../actions/next_quote_action';
+import Quote from '../components/single_quote';
 
-class Board extends Component {
+import RaisedButton from 'material-ui/RaisedButton';
+
+class QuoteList extends Component {
 	constructor() {
 		super();
 
@@ -12,7 +15,11 @@ class Board extends Component {
 		this.showNextQuote = this.showNextQuote.bind(this);
 	}
 	renderQuotes() {
-		return this.props.quotes.map(x => <div key={x.ts}>{x.data.quote}</div>);
+		return this.props.quotes.map(function(x){
+			return (
+				<Quote key={x.ts} qd={x}/>
+			)
+		});
 	}
 	showNextQuote() {
 		this.props.nextQuote();
@@ -21,7 +28,7 @@ class Board extends Component {
 		return (
 			<div>
 				{this.renderQuotes()}
-				<div className="btn btn-primary" onClick={this.showNextQuote}>Add</div>
+				<RaisedButton className="board-next" label="Next quote" primary={true} onClick={this.showNextQuote} />
 			</div>
 		)
 	}
@@ -39,4 +46,4 @@ function mapDispatchToProps(dispatch) {
 	}, dispatch);
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( Board );
+export default connect( mapStateToProps, mapDispatchToProps )( QuoteList );
