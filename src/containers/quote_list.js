@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import _ from 'lodash';
 
 import { nextQuote } from '../actions/next_quote_action';
+import { answerChange } from '../actions/answer_change_action';
+
 import Quote from '../components/single_quote';
 
 import RaisedButton from 'material-ui/RaisedButton';
 
 class QuoteList extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 
 		this.renderQuotes = this.renderQuotes.bind(this);
-		this.showNextQuote = this.showNextQuote.bind(this);
+		this.showNextQuote = props.nextQuote.bind(this);
+
+        this.onAnswerTextChange = props.answerChange;
 	}
 	renderQuotes() {
+        var onChange = this.onAnswerTextChange,
+            value = this.props.answer;
 		return this.props.quotes.map(function(x){
 			return (
-				<Quote key={x.ts} qd={x}/>
+				<Quote key={x.ts} qd={x} onChange={onChange} value={value} />
 			)
 		});
-	}
-	showNextQuote() {
-		this.props.nextQuote();
 	}
 	render() {
 		return (
@@ -36,14 +40,13 @@ class QuoteList extends Component {
 
 function mapStateToProps(state) {
 	return {
-		quotes: state.quotes
+		quotes: state.quotes,
+        answer: state.currentAnswer
 	}
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({
-		nextQuote: nextQuote
-	}, dispatch);
+	return bindActionCreators({ nextQuote, answerChange }, dispatch);
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( QuoteList );
