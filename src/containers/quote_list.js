@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import { nextQuote } from '../actions/next_quote_action';
 import { answerChange } from '../actions/answer_change_action';
+import { checkAnswer } from '../actions/check_answer_action';
 
 import Quote from '../components/single_quote';
 
@@ -16,15 +17,23 @@ class QuoteList extends Component {
 
 		this.renderQuotes = this.renderQuotes.bind(this);
 		this.showNextQuote = props.nextQuote.bind(this);
-
-        this.onAnswerTextChange = props.answerChange;
+		this.checkUserAnswer = this.checkUserAnswer.bind(this);
+	}
+	checkUserAnswer() {
+		let quotes = this.props.quotes;
+		this.props.checkAnswer( quotes[ quotes.length-1 ], this.props.answer );
 	}
 	renderQuotes() {
-        var onChange = this.onAnswerTextChange,
-            value = this.props.answer;
+    let onChange = this.props.answerChange,
+  			checkAnswer = this.checkUserAnswer,
+  			status = this.props.status,
+        value = this.props.answer;
 		return this.props.quotes.map(function(x){
 			return (
-				<Quote key={x.ts} qd={x} onChange={onChange} value={value} />
+				<Quote 
+					key={x.ts} qd={x} value={value} status={status}
+					onChange={onChange} onBtnClick={checkAnswer}
+				/>
 			)
 		});
 	}
@@ -41,12 +50,13 @@ class QuoteList extends Component {
 function mapStateToProps(state) {
 	return {
 		quotes: state.quotes,
-        answer: state.currentAnswer
+    answer: state.currentAnswer,
+    status: state.currentStatus
 	}
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ nextQuote, answerChange }, dispatch);
+	return bindActionCreators({ nextQuote, answerChange, checkAnswer }, dispatch);
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( QuoteList );
