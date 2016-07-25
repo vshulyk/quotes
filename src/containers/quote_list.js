@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { nextQuote } from '../actions/next_quote_action';
 import { answerChange } from '../actions/answer_change_action';
 import { checkAnswer } from '../actions/check_answer_action';
+import { getHint } from '../actions/get_hint_action';
 
 import Quote from '../components/single_quote';
 
@@ -18,21 +19,29 @@ class QuoteList extends Component {
 		this.renderQuotes = this.renderQuotes.bind(this);
 		this.showNextQuote = props.nextQuote.bind(this);
 		this.checkUserAnswer = this.checkUserAnswer.bind(this);
+
+		// INIT
+		this.showNextQuote();
 	}
 	checkUserAnswer() {
-		let quotes = this.props.quotes;
-		this.props.checkAnswer( quotes[ quotes.length-1 ], this.props.answer );
+		this.props.checkAnswer( this.quoteObj, this.userInput );
 	}
 	renderQuotes() {
     let onChange = this.props.answerChange,
   			checkAnswer = this.checkUserAnswer,
+  			getHint = this.props.getHint,
   			status = this.props.status,
-        value = this.props.answer;
+  			hintLevel = this.props.hintLevel,
+        value = this.props.userInput;
+
+		this.quoteObj = this.props.quotes[ this.props.quotes.length-1 ];
+
 		return this.props.quotes.map(function(x){
 			return (
 				<Quote 
 					key={x.ts} qd={x} value={value} status={status}
 					onChange={onChange} onBtnClick={checkAnswer}
+					onHintBtnClick={getHint} hintLevel={hintLevel}
 				/>
 			)
 		});
@@ -50,13 +59,14 @@ class QuoteList extends Component {
 function mapStateToProps(state) {
 	return {
 		quotes: state.quotes,
-    answer: state.currentAnswer,
-    status: state.currentStatus
+    userInput: state.currentAnswer,
+    status: state.currentStatus,
+    hintLevel: state.hints
 	}
 }
 
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators({ nextQuote, answerChange, checkAnswer }, dispatch);
+	return bindActionCreators({ nextQuote, answerChange, checkAnswer, getHint }, dispatch);
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( QuoteList );
