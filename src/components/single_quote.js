@@ -6,62 +6,80 @@ import RaisedButton from 'material-ui/RaisedButton';
 export default class Quote extends Component {
   constructor( props ) {
   	super();
+    // BAD IDEA
 
-    this.info = props.qd.data;
-
-    this.getStatus = this.getStatus.bind(this);
+    // first time
+    //this.info = props.quote.info;
+    //this.meta = props.quote;
   }
-  getStatus() {
-    const status = this.props.status;
-    if ( this.props.status ) {
+
+  componentWillUpdate() {
+    // BAD IDEA
+
+    //console.log('update');
+    //this.info = this.props.quote.info;
+    //this.meta = this.props.quote;
+  }
+
+  renderStatus() {
+    if ( this.meta.isTouched ) {
       return (
         <div>
           <div>
-            <span>{this.props.status}</span>
+            <span>Solved? </span>
+            <span>{this.meta.isSolved}</span>
           </div>
         </div>
       );
     }
     return;
   }
+
   renderHint( answer ) {
     var length = answer.length,
-        showAnswer = this.props.hintLevel == 4,
-        revealNumber = showAnswer ? length :this.props.hintLevel * Math.floor(length/4),
-        onHintClick = this.props.onHintBtnClick.bind(null,this.props.hintLevel);
+        revealNumber = !this.meta.hintsLeft ? length :Math.floor(length/(this.meta.hintsLeft+1) ),
+        onHintClick = this.props.onHintBtnClick.bind(null,this.meta.hintsLeft);
 
+    if ( this.meta.hintsLeft == 4 ) {
+      revealNumber = 0;
+    }
     const secret = answer.slice(0,revealNumber) + answer.slice(revealNumber).replace(/./g,'*');
 
-    console.log('SECRET', secret,this.info.author);
+    console.log('SECRET', this.meta.hintsLeft, secret,this.info.author);
 
-    if ( showAnswer ) {
+    if ( !this.meta.hintsLeft ) {
       return(
       <div>
-        <span>ANSWER:</span>
-        <span>{secret}</span>
+        <span>ANSWER: </span>
+        <span>{answer}</span>
       </div>
       );
     }
+
     return (
       <div>
         <div>
-          <span>ANSWER:</span>
+          <span>ANSWER: </span>
           <span>{secret}</span>
         </div>
-        <RaisedButton className="board-next" label="hint?" primary={true} 
-          onClick={onHintClick} 
+        <RaisedButton className="board-next" label="hint?" 
+          primary={true} onClick={onHintClick} 
         />
       </div>
     );
   }
+
   render() {
+    this.info = this.props.quote.info;
+    this.meta = this.props.quote;
+
     return (
       <div>
         <Paper className="board-quote" zDepth={2}>
           <div>{this.info.quote}</div>
-          <TextField hintText="Hint Text" value={this.props.value} onChange={this.props.onChange} />
+          <TextField hintText="Hint Text" onChange={this.props.onInputChange} />
           <RaisedButton className="board-next" label="check" primary={true} onClick={this.props.onBtnClick} />
-          {this.getStatus()}
+          {this.renderStatus()}
           {this.renderHint( this.info.author )}
         </Paper>
       </div>

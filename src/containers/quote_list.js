@@ -10,7 +10,8 @@ import { getHint } from '../actions/get_hint_action';
 
 import Quote from '../components/single_quote';
 
-import RaisedButton from 'material-ui/RaisedButton';
+// import RaisedButton from 'material-ui/RaisedButton';
+import CircularProgress from 'material-ui/CircularProgress';
 
 class QuoteList extends Component {
 	constructor(props) {
@@ -18,39 +19,38 @@ class QuoteList extends Component {
 
 		this.renderQuotes = this.renderQuotes.bind(this);
 		this.showNextQuote = props.nextQuote.bind(this);
-		this.checkUserAnswer = this.checkUserAnswer.bind(this);
+		this.renderSingleQuote = this.renderSingleQuote.bind(this);
 
 		// INIT
 		this.showNextQuote();
 	}
-	checkUserAnswer() {
-		this.props.checkAnswer( this.quoteObj, this.userInput );
-	}
+
 	renderQuotes() {
-    let onChange = this.props.answerChange,
-  			checkAnswer = this.checkUserAnswer,
-  			getHint = this.props.getHint,
-  			status = this.props.status,
-  			hintLevel = this.props.hintLevel,
-        value = this.props.userInput;
-
-		this.quoteObj = this.props.quotes[ this.props.quotes.length-1 ];
-
-		return this.props.quotes.map(function(x){
+		if ( !this.props.currentQuote ) {
 			return (
-				<Quote 
-					key={x.ts} qd={x} value={value} status={status}
-					onChange={onChange} onBtnClick={checkAnswer}
-					onHintBtnClick={getHint} hintLevel={hintLevel}
-				/>
+				<CircularProgress />
 			)
-		});
+		}
+
+		return [this.props.currentQuote, ...this.props.quotes].map(this.renderSingleQuote);
 	}
+
+	renderSingleQuote( quote ) {
+		let checkAnswer = this.props.checkAnswer.bind(null, this.props.currentQuote, this.props.userInput);
+
+		return (
+			<Quote 
+				key={quote.ts} quote={quote} userAnswer={this.props.userInput}
+				onInputChange={this.props.onAnswerChange} onBtnClick={checkAnswer}
+				onHintBtnClick={this.props.getHint}
+			/>
+		)
+	}
+
 	render() {
 		return (
 			<div>
 				{this.renderQuotes()}
-				<RaisedButton className="board-next" label="Next quote" primary={true} onClick={this.showNextQuote} />
 			</div>
 		)
 	}
@@ -58,10 +58,9 @@ class QuoteList extends Component {
 
 function mapStateToProps(state) {
 	return {
-		quotes: state.quotes,
-    userInput: state.currentAnswer,
-    status: state.currentStatus,
-    hintLevel: state.hints
+		quotes: state.quotes.list,
+		currentQuote: state.quotes.current,
+    userInput: state.currentAnswer
 	}
 }
 

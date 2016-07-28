@@ -1,8 +1,8 @@
 export const ANSWER_CHANGE = 'ANSWER_CHANGE';
 
-export function answerChange( _, text ) {
+export function answerChange( evt ) {
     return {
         type: ANSWER_CHANGE,
-        payload: text || _.target.value
+        payload: evt.target.value
     }
 }
