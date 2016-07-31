@@ -3,5 +3,13 @@
 	padding: 10px;
 }
 .board-next {
-	margin-top: 10px;
+	margin: 10px;
+}
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
 }

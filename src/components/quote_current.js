@@ -4,22 +4,6 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 
 export default class Quote extends Component {
-  constructor( props ) {
-  	super();
-    // BAD IDEA
-
-    // first time
-    //this.info = props.quote.info;
-    //this.meta = props.quote;
-  }
-
-  componentWillUpdate() {
-    // BAD IDEA
-
-    //console.log('update');
-    //this.info = this.props.quote.info;
-    //this.meta = this.props.quote;
-  }
 
   renderStatus() {
     if ( this.meta.isTouched ) {
@@ -27,7 +11,7 @@ export default class Quote extends Component {
         <div>
           <div>
             <span>Solved? </span>
-            <span>{this.meta.isSolved}</span>
+            <span>{this.meta.isSolved ?'YES' :'NO'}</span>
           </div>
         </div>
       );
