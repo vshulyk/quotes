@@ -11,7 +11,6 @@ import { getHint } from '../actions/get_hint_action';
 import Quote from '../components/quote_current';
 import QuoteListItem from '../components/quote_list_item';
 
-// import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
 
@@ -25,6 +24,7 @@ class QuoteList extends Component {
 		this.showNextQuote = props.nextQuote.bind(this);
 
 		this.checkAnswer = this.checkAnswer.bind(this);
+		this.solveAndFetch = this.solveAndFetch.bind(this);
 
 		// INIT
 		this.showNextQuote();
@@ -32,9 +32,18 @@ class QuoteList extends Component {
 
 	checkAnswer() {
 		const answer = this.props.currentQuote.info.author,
-			result = answer === this.props.userInput;
+			userAnswer = this.props.userInput;
+
+		if ( userAnswer.length >= 4 && answer.toLowerCase().indexOf( userAnswer.toLowerCase() ) >= 0 ) {
+			this.solveAndFetch( true );
+		} else {
+			this.solveAndFetch( false );
+		}
+	}
+
+	solveAndFetch( result ) {
 		this.props.markSolved( result );
-		this.props.nextQuote();
+    this.props.nextQuote();
 	}
 
 	renderCurrentQuote() {
@@ -49,6 +58,7 @@ class QuoteList extends Component {
 				quote={this.props.currentQuote} userAnswer={this.props.userInput}
 				onInputChange={this.props.onAnswerChange} 
 				onHintBtnClick={this.props.getHint}
+				solveAndFetch={this.solveAndFetch}
 				onBtnClick={this.checkAnswer}
 			/>
 		)
@@ -66,7 +76,7 @@ class QuoteList extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className="col-lg-6 col-md-8 col-centered" >
 				{ this.renderCurrentQuote() }
 				{ this.renderList() }
 			</div>

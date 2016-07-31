@@ -13,3 +13,8 @@
 .incorrect {
 	color: red;
 }
+
+.col-centered {
+	margin: auto;
+	float: none !important;
+}
