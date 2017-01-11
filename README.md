@@ -8,3 +8,4 @@ P.S. I mean it is required ;)
 	> npm start
 	
 ```
+![Alt text](/screenshot?raw=true "app in action")
